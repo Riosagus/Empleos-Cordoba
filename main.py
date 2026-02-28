@@ -11,9 +11,12 @@ import datetime
 import os
 
 import feedparser
+import urllib.parse
 
 def buscar_empleos():
-    feed_url = "https://rss.indeed.com/rss?q=&l=Córdoba%2C+Córdoba"
+    query = urllib.parse.quote("empleos Córdoba Capital")
+    feed_url = f"https://news.google.com/rss/search?q={query}&hl=es-419&gl=AR&ceid=AR:es-419"
+
     feed = feedparser.parse(feed_url)
 
     resultados = []
