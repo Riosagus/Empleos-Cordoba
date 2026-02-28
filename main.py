@@ -11,14 +11,20 @@ import datetime
 import os
 
 def buscar_empleos():
-    query = "empleos Córdoba Capital site:ar"
-    url = f"https://www.google.com/search?q={query}"
+    url = "https://ar.indeed.com/jobs?q=&l=Córdoba%2C+Córdoba"
     headers = {"User-Agent": "Mozilla/5.0"}
     r = requests.get(url, headers=headers)
     soup = BeautifulSoup(r.text, "html.parser")
 
     resultados = []
 
+    for job in soup.find_all("a", attrs={"data-hide-spinner": "true"}):
+        titulo = job.get_text(strip=True)
+        link = "https://ar.indeed.com" + job.get("href", "")
+        if titulo:
+            resultados.append((titulo, link))
+
+    return resultados[:20]
     for g in soup.find_all("div", class_="g"):
         titulo = g.find("h3")
         link = g.find("a")
