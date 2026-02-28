@@ -12,24 +12,27 @@ import feedparser
 import urllib.parse
 
 def buscar_empleos():
-    query = urllib.parse.quote(
-        'site:ar "Córdoba Capital" ("se busca" OR "empleo" OR "puesto vacante" OR "trabajo")'
-    )
+    api_key = os.environ["SERPAPI_KEY"]
 
-    feed_url = f"https://www.google.com/search?q={query}&num=20&hl=es"
+    params = {
+        "engine": "google",
+        "q": 'empleos Córdoba Capital',
+        "hl": "es",
+        "gl": "ar",
+        "api_key": api_key
+    }
 
-    headers = {"User-Agent": "Mozilla/5.0"}
-    response = requests.get(feed_url, headers=headers)
-
-    soup = BeautifulSoup(response.text, "html.parser")
+    response = requests.get("https://serpapi.com/search", params=params)
+    data = response.json()
 
     resultados = []
 
-    for g in soup.find_all("div", class_="tF2Cxc"):
-        titulo = g.find("h3")
-        link = g.find("a")
-        if titulo and link:
-            resultados.append((titulo.text, link["href"]))
+    if "organic_results" in data:
+        for result in data["organic_results"]:
+            titulo = result.get("title")
+            link = result.get("link")
+            if titulo and link:
+                resultados.append((titulo, link))
 
     return resultados[:20]
 def generar_pdf(ofertas):
