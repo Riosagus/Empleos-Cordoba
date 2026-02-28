@@ -1,4 +1,4 @@
-name: Empleos Diario
+name: Empleos diarios
 
 on:
   schedule:
@@ -10,19 +10,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run script
+      - name: Descargar historial previo
+        uses: actions/download-artifact@v4
+        with:
+          name: historial
+        continue-on-error: true
+
+      - name: Ejecutar script
+        run: python main.py
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
           SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
-        run: python main.py
+
+      - name: Subir historial actualizado
+        uses: actions/upload-artifact@v4
+        with:
+          name: historial
+          path: historial.json
