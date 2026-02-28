@@ -1,3 +1,5 @@
+import requests
+from bs4 import BeautifulSoup
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import A4
@@ -10,20 +12,26 @@ import feedparser
 import urllib.parse
 
 def buscar_empleos():
-    query = urllib.parse.quote("empleos Córdoba Capital")
-    feed_url = f"https://news.google.com/rss/search?q={query}&hl=es-419&gl=AR&ceid=AR:es-419"
+    query = urllib.parse.quote(
+        'site:ar "Córdoba Capital" ("se busca" OR "empleo" OR "puesto vacante" OR "trabajo")'
+    )
 
-    feed = feedparser.parse(feed_url)
+    feed_url = f"https://www.google.com/search?q={query}&num=20&hl=es"
+
+    headers = {"User-Agent": "Mozilla/5.0"}
+    response = requests.get(feed_url, headers=headers)
+
+    soup = BeautifulSoup(response.text, "html.parser")
 
     resultados = []
 
-    for entry in feed.entries:
-        titulo = entry.title
-        link = entry.link
-        resultados.append((titulo, link))
+    for g in soup.find_all("div", class_="tF2Cxc"):
+        titulo = g.find("h3")
+        link = g.find("a")
+        if titulo and link:
+            resultados.append((titulo.text, link["href"]))
 
     return resultados[:20]
-
 def generar_pdf(ofertas):
     fecha = datetime.datetime.now().strftime("%Y-%m-%d")
     filename = f"empleos_{fecha}.pdf"
