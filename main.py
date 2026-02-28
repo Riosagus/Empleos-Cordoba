@@ -8,8 +8,6 @@ import smtplib
 from email.message import EmailMessage
 import datetime
 import os
-import feedparser
-import urllib.parse
 
 def buscar_empleos():
     api_key = os.environ["SERPAPI_KEY"]
