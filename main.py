@@ -53,7 +53,7 @@ def enviar_email(pdf_path):
         msg = EmailMessage()
         msg["Subject"] = "Reporte Diario Empleos Córdoba"
         msg["From"] = EMAIL
-        msg["To"] = "ríos.agus3333@gmail.com"
+        msg["To"] = "rios.agus3333@gmail.com"
         msg.set_content("Adjunto reporte diario automático.")
 
         with open(pdf_path, "rb") as f:
