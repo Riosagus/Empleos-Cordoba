@@ -10,13 +10,20 @@ from email.message import EmailMessage
 import datetime
 import os
 
+import feedparser
+
 def buscar_empleos():
-    url = "https://ar.indeed.com/jobs?q=&l=Córdoba%2C+Córdoba"
-    headers = {"User-Agent": "Mozilla/5.0"}
-    r = requests.get(url, headers=headers)
-    soup = BeautifulSoup(r.text, "html.parser")
+    feed_url = "https://rss.indeed.com/rss?q=&l=Córdoba%2C+Córdoba"
+    feed = feedparser.parse(feed_url)
 
     resultados = []
+
+    for entry in feed.entries:
+        titulo = entry.title
+        link = entry.link
+        resultados.append((titulo, link))
+
+    return resultados[:20]
 
     for job in soup.find_all("a", attrs={"data-hide-spinner": "true"}):
         titulo = job.get_text(strip=True)
