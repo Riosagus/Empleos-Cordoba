@@ -1,6 +1,3 @@
-# Empleos-Cordoba
-import requests
-from bs4 import BeautifulSoup
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import A4
@@ -9,7 +6,6 @@ import smtplib
 from email.message import EmailMessage
 import datetime
 import os
-
 import feedparser
 import urllib.parse
 
@@ -55,7 +51,7 @@ def enviar_email(pdf_path):
         msg["Subject"] = "Reporte Diario Empleos Córdoba"
         msg["From"] = EMAIL
         msg["To"] = "rios.agus3333@gmail.com"
-                msg.set_content("Adjunto reporte diario automático.")
+        msg.set_content("Adjunto reporte diario automático.")
 
         with open(pdf_path, "rb") as f:
             msg.add_attachment(f.read(), maintype="application", subtype="pdf", filename=pdf_path)
